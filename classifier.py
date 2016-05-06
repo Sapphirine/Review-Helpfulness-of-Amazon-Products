@@ -1,18 +1,23 @@
 import time
 import json
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction import DictVectorizer
-import pandas as pd
-from sklearn.naive_bayes import MultinomialNB
 import logging
 import math
+import pandas as pd
+import numpy as np
+
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import GradientBoostingClassifier 
 from sklearn.cross_validation import train_test_split
 from sklearn.metrics import accuracy_score
 
 
 logging.captureWarnings(True)
-with open('grocery.txt') as datafile:
+
+with open('g1.txt') as datafile:
     data=json.load(datafile)
 count_vectorizer = CountVectorizer()
 jdata=json.dumps(data)
@@ -30,11 +35,7 @@ def features(d):
     termsText = tokenize(d['reviewText'])
     termsSummary = tokenize(d['summary'])
     data = {'overall': float(d['overall']), 'unixReviewTime': float(d['unixReviewTime'])}
-    data['count']=float(d['count'])
-##    categories=d['categories']
-##    
-##    for c in categories:
-##        data[c[0]]=1.0
+##    data['count']=float(d['count'])
 ##    data['text_length']=len(termsText)
 ##    data['summary_length']=len(termsSummary)
     for t in termsText:
@@ -53,22 +54,29 @@ train_targets = trainpdata['hfactor'].values
 
 test_targets = testpdata['hfactor'].values
 
+print 'Grocery reviews'
 
 classifier_NB = MultinomialNB()
 classifier_NB.fit(X_train, train_targets)
 predictions_NB = classifier_NB.predict(X_test)
-
+print 'Naive Bayes'
 print accuracy_score(test_targets,predictions_NB)
-
-##testing={'overall':5.0
-##         ,'summary':'KISS HER, KILL HER, BE HER'
-##         ,'reviewText':'First off, this is part of a series. If you haven\'t seen the previous films (or read the books) you will be hopelessly lost. There is no flashback to bring you up to date.This film picks up where the last one leaves off. Katniss (Jennifer Lawrence) is recruited to be the face of the rebellion. She is reluctant until it becomes personal. Happy content people don\'t pick fights. The film consists of a propaganda war between Peeta (Josh Hutcherson) and the government and Katniss and the rebels/terrorists/anarchists/freedom fighters. It finishes on an up note...sort of.The film delves into the problems of a rebellion and the need for a war of words to convince hearts and minds. In many ways I like this film more than the previous ones, especially the second one which was just a filler film to get us to the rebellion. I think of the second film as "Star Wars Episode 2" but less annoying. My apologies to the president of the Jar Jar Binks fan club.In this film, I now see why Jennifer Lawrence was needed for the series as she transforms from reality TV star to a person who runs a gauntlet of emotions: fear, despair, terror, panic, hopelessness, and pretending she can\'t act. Clearly she nailed it as only she can.The film had a number of memorable lines:"My sister gets to keep her cat." was great. It demonstrates that the rebellion is about her personal life and that it takes priority over any cause...for better or worse."Best dressed rebel in history." Shows some mindless priorities."Prepare to pay the ultimate price."And with sadly Philip Seymour Hoffman says, "Anyone can be replaced."Katniss takes a bow to a gun fight. It makes for good fiction, but seriously?If you have seen the other two, you are going to watch this one too.Guide: No bad language, sex, or nudity.'
-##         ,'unixReviewTime':math.ceil(time.time())}
-##t=features(testing)
-##test=vect.transform(t)
     
 model_LR = LogisticRegression()
 model_LR.fit(X_train, train_targets)
 predictions_LR = model_LR.predict(X_test)
-
+print 'Logistic Regression'
 print accuracy_score(test_targets,predictions_LR)
+
+modelTree = DecisionTreeClassifier(max_depth=7)
+modelTree.fit(X_train, train_targets)
+predictions_Tree = modelTree.predict(X_test)
+print 'Decision Tree'
+print accuracy_score(test_targets,predictions_Tree)
+
+
+modelGr = GradientBoostingClassifier()
+modelGr.fit(X_train, train_targets)
+predictions_Gr = np.array(modelGr.predict(X_test.toarray()))
+print 'Gradient Boosting'
+print accuracy_score(test_targets,predictions_Gr)
