@@ -4,8 +4,7 @@ import math
 import gzip
 
 def parse(path):
-##  g = gzip.open(path, 'rb')
-  g = open(path, 'rb')
+  g = gzip.open(path, 'rb')
   
   for l in g:
     yield eval(l)
@@ -18,10 +17,10 @@ def getDF(path):
     i += 1
   return pd.DataFrame.from_dict(df, orient='index')
 
-datafile='datatest.txt'
-gzipfilename='reviews_Amazon_Instant_Video.json.gz'
-df = getDF(datafile)
-f=open('a.txt','w')
+gzipfilename='reviews_Electronics.json.gz'
+df = getDF(gzipfilename)
+print 'read'
+f=open('elec_rev.txt','w')
 c=len(df.index)
 dt=[]
 for i in xrange(c):
@@ -38,8 +37,9 @@ for i in xrange(c):
   summary=df['summary'][i]
   dict1={"reviewText":reviewText,"unixReviewTime":unixReviewTime,"overall":overall,"summary":summary,"hfactor":hfactor}
   dt.append(dict1)
-f.write(json.dumps(dt))
-f.close()
+print 'completed'
+##f.write(json.dumps(dt))
+##f.close()
 
 
     
