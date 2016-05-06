@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score
 
 
 logging.captureWarnings(True)
-with open('aiv.txt') as datafile:
+with open('grocery.txt') as datafile:
     data=json.load(datafile)
 count_vectorizer = CountVectorizer()
 jdata=json.dumps(data)

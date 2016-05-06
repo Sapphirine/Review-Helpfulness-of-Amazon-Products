@@ -1,3 +1,4 @@
+import sys
 import json
 import pandas as pd
 import math
@@ -18,15 +19,15 @@ def getDF(path):
   return pd.DataFrame.from_dict(df, orient='index')
 
 
-gzipfilename='reviews_Electronics.json.gz'
+gzipfilename=sys.argv[1]
 df = getDF(gzipfilename)
 
-prodfilename='meta_Electronics.json.gz'
+prodfilename=sys.argv[2]
 prodf = getDF(prodfilename)
 
 
 
-f=open('electronics.txt','w')
+f=open('grocery.txt','w')
 c=len(df.index)
 
 time_dict={}

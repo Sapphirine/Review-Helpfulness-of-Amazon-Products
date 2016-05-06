@@ -1,3 +1,4 @@
+import sys
 import json
 import pandas as pd
 import math
@@ -17,10 +18,10 @@ def getDF(path):
     i += 1
   return pd.DataFrame.from_dict(df, orient='index')
 
-gzipfilename='reviews_Electronics.json.gz'
+gzipfilename=sys.argv[1]
 df = getDF(gzipfilename)
 print 'read'
-f=open('elec_rev.txt','w')
+f=open('groc_rev.txt','w')
 c=len(df.index)
 dt=[]
 for i in xrange(c):
@@ -38,8 +39,8 @@ for i in xrange(c):
   dict1={"reviewText":reviewText,"unixReviewTime":unixReviewTime,"overall":overall,"summary":summary,"hfactor":hfactor}
   dt.append(dict1)
 print 'completed'
-##f.write(json.dumps(dt))
-##f.close()
+f.write(json.dumps(dt))
+f.close()
 
 
     
